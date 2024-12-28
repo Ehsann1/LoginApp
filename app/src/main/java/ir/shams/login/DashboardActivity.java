@@ -5,16 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class DashboardActivity extends AppCompatActivity {
@@ -49,47 +48,18 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void populateUserTable() {
         // Add table headers
-        TableRow headerRow = new TableRow(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            addCellToRow(headerRow, "ID", true);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            addCellToRow(headerRow, "Full Name", true);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            addCellToRow(headerRow, "Phone", true);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            addCellToRow(headerRow, "Username", true);
-        }
-        tableUsers.addView(headerRow);
+        addTableRow("ID", "Full Name", "Phone", "Username", true);
 
         // Fetch user data from the database
         Cursor cursor = databaseHelper.getAllUsers();
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                TableRow row = new TableRow(this);
-                row.setGravity(Gravity.CENTER);
-
                 @SuppressLint("Range") String id = cursor.getString(cursor.getColumnIndex("id"));
                 @SuppressLint("Range") String fullName = cursor.getString(cursor.getColumnIndex("full_name"));
                 @SuppressLint("Range") String phone = cursor.getString(cursor.getColumnIndex("phone_number"));
                 @SuppressLint("Range") String username = cursor.getString(cursor.getColumnIndex("username"));
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                    addCellToRow(row, id, false);
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                    addCellToRow(row, fullName, false);
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                    addCellToRow(row, phone, false);
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                    addCellToRow(row, username, false);
-                }
-
-                tableUsers.addView(row);
+                addTableRow(id, fullName, phone, username, false);
             } while (cursor.moveToNext());
 
             cursor.close();
@@ -98,16 +68,34 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.VANILLA_ICE_CREAM)
+    private void addTableRow(String id, String fullName, String phone, String username, boolean isHeader) {
+        TableRow row = new TableRow(this);
+        row.setGravity(Gravity.CENTER);
+
+        // Add cells
+        addCellToRow(row, id, isHeader);
+        addCellToRow(row, fullName, isHeader);
+        addCellToRow(row, phone, isHeader);
+        addCellToRow(row, username, isHeader);
+
+        tableUsers.addView(row);
+    }
+
     private void addCellToRow(TableRow row, String text, boolean isHeader) {
         TextView cell = new TextView(this);
         cell.setText(text);
         cell.setGravity(Gravity.CENTER);
-        cell.setPadding(4, 8, 4, 8);
-        cell.setTextSize(isHeader ? 20 : 16);
-        cell.setTextColor(isHeader ? getResources().getColor(android.R.color.system_error_300) :
-                getResources().getColor(android.R.color.darker_gray));
+        cell.setPadding(8, 8, 8, 8);
+        cell.setTextSize(isHeader ? 16 : 14);
         cell.setBackgroundResource(R.drawable.cell_border);
+
+        // Use a simple text color fallback
+        if (isHeader) {
+            cell.setTextColor(getResources().getColor(android.R.color.black));
+        } else {
+            cell.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        }
+
         row.addView(cell);
     }
 
@@ -116,6 +104,7 @@ public class DashboardActivity extends AppCompatActivity {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(browserIntent);
     }
+
     private void closeApp() {
         finishAffinity(); // Close all activities
         System.exit(0); // Exit app
@@ -127,4 +116,3 @@ public class DashboardActivity extends AppCompatActivity {
         finish();
     }
 }
-
