@@ -1,8 +1,18 @@
 <resources>
-    <string name="LoginPageTitle">صفحه ورد</string>
-    <string name="username">نام کاربری</string>
-    <string name="password">رمزعبور</string>
-    <string name="login">ورود</string>
+    <string name="LoginPageTitle">Login Page</string>
+    <string name="username">Username</string>
+    <string name="password">password</string>
+    <string name="login">Login</string>
     <string name="app_name">Login</string>
     <string name="new_page">New page!</string>
+    <string name="user_details_will_be_displayed_here">User details will be displayed here</string>
+    <string name="open_digikala">Open Digikala</string>
+    <string name="open_google">Open Google</string>
+    <string name="close_app">Close App</string>
+    <string name="back_to_login">Back to Login</string>
+    <string name="sign_up">Signup</string>
+    <string name="back">back</string>
+    <string name="full_name">full name</string>
+    <string name="phone_number">phone number</string>
+    <string name="list_users">List Users</string>
 </resources>
